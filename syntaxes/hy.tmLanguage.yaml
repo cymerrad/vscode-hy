@@ -57,10 +57,34 @@ repository:
     name: meta.symbol.dynamic.hy
   keyfn:
     patterns:
-    - match: (?<=(\s|\(|\[|\{))(if(-[-\p{Ll}\?]*)?|when(-[-\p{Ll}]*)?|for(-[-\p{Ll}]*)?|cond|do|let(-[-\p{Ll}\?]*)?|binding|loop|recur|fn|throw[\p{Ll}\-]*|try|catch|finally|([\p{Ll}]*case))(?=(\s|\)|\]|\}))
-      name: storage.control.hy
-    - match: (?<=(\s|\(|\[|\{))(declare-?|(in-)?ns|import|use|require|load|compile|(def[\p{Ll}\-]*))(?=(\s|\)|\]|\}))
+    # - match: (?<=(\s|\(|\[|\{))(if(-[-\p{Ll}\?]*)?|when(-[-\p{Ll}]*)?|for(-[-\p{Ll}]*)?|cond|do|let(-[-\p{Ll}\?]*)?|binding|loop|recur|fn|throw[\p{Ll}\-]*|try|catch|finally|([\p{Ll}]*case))(?=(\s|\)|\]|\}))
+    #   name: storage.control.hy
+    - match: |
+        (?x)
+        (?<=(\s|\(|\[|\{))
+        (
+          \.|->|->>|and|as->|assert|assoc|break|comment|cond|
+          dfor|continue|do|doc|#doc|
+          defmacro|defmacro/g!|defmacro!|
+          deftag|del|doto|eval-and-compile|eval-when-compile|
+          first|for|gensym|get|gfor|if|if\*|if-not|
+          lif|lif-not|import|last|lfor|
+          not|or|print|quasiquote|quote|require|
+          rest|return|sfor|cut|raise|try|unless|
+          unpack-iterable|unpack-mapping|unquote|
+          unquote-splice|when|while|with|with/a|
+          with-decorator|#@|with-gensyms|xor|yield|yield-from
+        )
+        (?=(\s|\)|\]|\}))
       name: keyword.control.hy
+    - match: |
+        (?x)
+        (?<=(\s|\(|\[|\{))
+        (
+          setv|defmain|defn|defn/a|fn|fn/a|defclass|nonlocal|global
+        )
+        (?=(\s|\)|\]|\}))
+      name: storage.control.hy
   keyword:
     match: (?<=(\s|\(|\[|\{)):[\w\#\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}|\,))
     name: constant.keyword.hy
@@ -121,21 +145,6 @@ repository:
     name: meta.quoted-expression.hy
     patterns:
     - include: $self
-  # regexp:
-  #   begin: '#"'
-  #   beginCaptures:
-  #     '0':
-  #       name: punctuation.definition.regexp.begin.hy
-  #   end: '"'
-  #   endCaptures:
-  #     '0':
-  #       name: punctuation.definition.regexp.end.hy
-  #   name: string.regexp.hy
-  #   patterns:
-  #   - include: '#regexp_escaped_char'
-  # regexp_escaped_char:
-  #   match: \\.
-  #   name: constant.character.escape.hy
   set:
     begin: (\#\{)
     beginCaptures:
@@ -165,10 +174,13 @@ repository:
         name: punctuation.section.expression.end.hy
     name: meta.expression.hy
     patterns:
-    - begin: (?<=\()(ns|declare|def[\w\d._:+=><!?*-]*|[\w._:+=><!?*-][\w\d._:+=><!?*-]*/def[\w\d._:+=><!?*-]*)\s+
+    - begin: |
+        (?x)
+        (?<=\()
+        (defmain|defn|defn/a|fn|fn/a|defclass)\s+
       beginCaptures:
         '1':
-          name: keyword.control.hy
+          name: storage.control.hy
       end: (?=\))
       name: meta.definition.global.hy
       patterns:
