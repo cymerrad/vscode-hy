@@ -1,0 +1,25 @@
+{
+    "name": "hy",
+    "displayName": "vscode-hy",
+    "description": "Hylang support",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.44.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "hy",
+            "aliases": ["Hylang", "hy", "Hy"],
+            "extensions": [".hy"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "hy",
+            "scopeName": "source.hy",
+            "path": "./syntaxes/hy.tmLanguage"
+        }]
+    }
+}
