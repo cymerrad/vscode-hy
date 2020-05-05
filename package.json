@@ -6,20 +6,43 @@
     "engines": {
         "vscode": "^1.44.0"
     },
+    "publisher": "cymerrad",
+    "icon": "assets/hy-logo-small.png",
+    "license": "MIT",
     "categories": [
         "Programming Languages"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cymerrad/vscode-hy.git"
+    },
     "contributes": {
-        "languages": [{
-            "id": "hy",
-            "aliases": ["Hylang", "hy", "Hy"],
-            "extensions": [".hy"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "hy",
-            "scopeName": "source.hy",
-            "path": "./syntaxes/hy.tmLanguage"
-        }]
+        "languages": [
+            {
+                "id": "hy",
+                "aliases": [
+                    "Hylang",
+                    "hy",
+                    "Hy"
+                ],
+                "extensions": [
+                    ".hy"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "hy",
+                "scopeName": "source.hy",
+                "path": "./syntaxes/hy.tmLanguage"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "hy",
+                "path": "./snippets/hy.json"
+            }
+        ]
     }
 }
