@@ -8,8 +8,10 @@ Also a bit modernized and fixed where possible (WIP).
 - removed scheme-only keywords
 
 # TODO
+- json from more readable [citation needed] yaml
 - illegal parenthesis
 - lists and dictionaries
+- remove non-built-in symbols
 - octals and hexes
 - format & bracket string (https://docs.hylang.org/en/stable/language/syntax.html#string-literals)
 - keywords
