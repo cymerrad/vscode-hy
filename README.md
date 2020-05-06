@@ -5,14 +5,13 @@ Also a bit modernized and fixed where possible (WIP).
 # Done
 - using .json instead of .xml
 - fixed single-quote pairing
-- removed scheme-only keywords
+- json from more readable [citation needed] yaml
+- lists, sets and dictionaries
+- remove non-built-in symbols
 
 # TODO
-- json from more readable [citation needed] yaml
+- functions, classes and their bodies
 - illegal parenthesis
-- lists and dictionaries
-- remove non-built-in symbols
 - octals and hexes
 - format & bracket string (https://docs.hylang.org/en/stable/language/syntax.html#string-literals)
-- keywords
 - discard prefix
