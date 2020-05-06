@@ -1,247 +1,258 @@
-information_for_contributors:
-- This file has been converted from https://github.com/atom/language-hy/blob/master/grammars/hy.cson
-- If you want to provide a fix or improvement, please create a pull request against
-  the original repository.
-- Once accepted there, we are happy to receive an update request.
+symbols:
+  - hy_symbol: &hy_symbol ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
 name: Hy
 patterns:
-- include: '#comment'
-- include: '#shebang-comment'
-- include: '#quoted-sexp'
-- include: '#sexp'
-- include: '#keyfn'
-- include: '#string'
-- include: '#vector'
-- include: '#set'
-- include: '#map'
-# - include: '#regexp'
-- include: '#var'
-- include: '#constants'
-- include: '#dynamic-variables'
-- include: '#metadata'
-- include: '#namespace-symbol'
-- include: '#symbol'
+  - include: "#comment"
+  - include: "#shebang-comment"
+  - include: "#quoted-sexp"
+  - include: "#sexp"
+  - include: "#keyfn"
+  - include: "#string"
+  - include: "#vector"
+  - include: "#set"
+  - include: "#map"
+  # - include: '#regexp'
+  - include: "#var"
+  - include: "#constants"
+  # - include: '#metadata'
+  - include: "#symbol"
 repository:
+  args:
+    begin: (\[)
+    beginCaptures:
+      "1":
+        name: punctuation.definition.parameters.begin.python
+    end: (\])
+    endCaptures:
+      "1":
+        name: punctuation.definition.parameters.end.python
+    name: meta.function.parameters.python
+    patterns:
+      - match: \s*(\w+)\s*,?\s*
+        name: variable.parameter.function.language.python
   comment:
     begin: (?<!\\);
     beginCaptures:
-      '0':
-        name: punctuation.definition.comment.hy
+      "0":
+        name: punctuation.definition.comment.python
     end: $
-    name: comment.line.semicolon.hy
+    name: comment.line.semicolon.clojure
   constants:
     patterns:
-    - match: (None)(?=(\s|\)|\]|\}))
-      name: constant.language.nil.hy
-    - match: (True|False)
-      name: constant.language.boolean.hy
-    - match: (-?\d+/\d+)
-      name: constant.numeric.ratio.hy
-    - match: (-?\d+[rR]\w+)
-      name: constant.numeric.arbitrary-radix.hy
-    - match: (-?0x[0-9a-fA-F]+)
-      name: constant.numeric.hexadecimal.hy
-    - match: (-?0o[0-7]+)
-      name: constant.numeric.octal.hy
-    # - match: (-?\d+\.\d+([eE][+-]?\d+)?M)
-    #   name: constant.numeric.bigdecimal.hy
-    - match: (-?\d+\.\d+([eE][+-]?\d+)?)
-      name: constant.numeric.double.hy
-    # - match: (-?\d+N)
-    #   name: constant.numeric.bigint.hy
-    - match: (-?\d+)
-      name: constant.numeric.long.hy
-    - include: '#keyword'
-  dynamic-variables:
-    match: \*[\w\.\-\_\:\+\=\>\<\!\?\d]+\*
-    name: meta.symbol.dynamic.hy
+      - match: (None)(?=(\s|\)|\]|\}))
+        name: constant.language.python
+      - match: (True|False)
+        name: constant.language.python
+      - match: (-?\d+/\d+)
+        name: constant.numeric.ratio.clojure
+
+      - match: (-?0x[0-9a-fA-F]+)
+        name: constant.numeric.hex.python
+      - match: (-?0o[0-7]+)
+        name: constant.numeric.oct.python
+      # - match: (-?\d+\.\d+([eE][+-]?\d+)?M)
+      #   name: constant.numeric.bigdecimal.python
+      - match: (-?\d+\.\d+([eE][+-]?\d+)?)
+        name: constant.numeric.float.python
+      # - match: (-?\d+N)
+      #   name: constant.numeric.bigint.python
+      - match: (-?\d+)
+        name: constant.numeric.dec.python
+      - include: "#keyword"
+  defines:
+    begin: |
+      (?x)
+      (?<=\()
+      (defmain|defn|defn/a|fn|fn/a|defclass)\s+
+    beginCaptures:
+      "1":
+        name: storage.control.python
+    end: (?=\))
+    name: meta.function.python
+    patterns:
+      - match: *hy_symbol
+        name: entity.name.function.python.defines
+      - include: "#args"
+      - include: "#sexp"
+  extends:
+    begin: |
+      (?x)
+      (?<=\()
+      (import|require|defmacro|defmacro/g!|defmacro!|deftag)\s+
+    beginCaptures:
+      "1":
+        name: keyword.control.python
+    end: (?=\))
+    name: meta.function.python
+    patterns:
+      - include: "#var"
   keyfn:
     patterns:
-    # - match: (?<=(\s|\(|\[|\{))(if(-[-\p{Ll}\?]*)?|when(-[-\p{Ll}]*)?|for(-[-\p{Ll}]*)?|cond|do|let(-[-\p{Ll}\?]*)?|binding|loop|recur|fn|throw[\p{Ll}\-]*|try|catch|finally|([\p{Ll}]*case))(?=(\s|\)|\]|\}))
-    #   name: storage.control.hy
-    - match: |
-        (?x)
-        (?<=(\s|\(|\[|\{))
-        (
-          \.|->|->>|and|as->|assert|assoc|break|comment|cond|
-          dfor|continue|do|doc|#doc|
-          defmacro|defmacro/g!|defmacro!|
-          deftag|del|doto|eval-and-compile|eval-when-compile|
-          first|for|gensym|get|gfor|if|if\*|if-not|
-          lif|lif-not|import|last|lfor|
-          not|or|print|quasiquote|quote|require|
-          rest|return|sfor|cut|raise|try|unless|
-          unpack-iterable|unpack-mapping|unquote|
-          unquote-splice|when|while|with|with/a|
-          with-decorator|#@|with-gensyms|xor|yield|yield-from
-        )
-        (?=(\s|\)|\]|\}))
-      name: keyword.control.hy
-    - match: |
-        (?x)
-        (?<=(\s|\(|\[|\{))
-        (
-          setv|defmain|defn|defn/a|fn|fn/a|defclass|nonlocal|global
-        )
-        (?=(\s|\)|\]|\}))
-      name: storage.control.hy
+      # - match: (?<=(\s|\(|\[|\{))(if(-[-\p{Ll}\?]*)?|when(-[-\p{Ll}]*)?|for(-[-\p{Ll}]*)?|cond|do|let(-[-\p{Ll}\?]*)?|binding|loop|recur|fn|throw[\p{Ll}\-]*|try|catch|finally|([\p{Ll}]*case))(?=(\s|\)|\]|\}))
+      #   name: storage.control.python
+      - match: |
+          (?x)
+          (?<=(\s|\(|\[|\{))
+          (
+            \.|->|->>|and|as->|assert|assoc|break|comment|cond|
+            dfor|continue|doc|#doc|do|
+            defmacro|defmacro/g!|defmacro!|
+            deftag|del|doto|eval-and-compile|eval-when-compile|
+            first|for|gensym|get|gfor|if|if\*|if-not|
+            lif|lif-not|import|last|lfor|
+            not|or|print|quasiquote|quote|require|
+            rest|return|sfor|cut|raise|try|unless|
+            unpack-iterable|unpack-mapping|unquote|
+            unquote-splice|when|while|with|with/a|
+            with-decorator|#@|with-gensyms|xor|yield|yield-from
+          )
+          (?=(\s|\)|\]|\}))
+        name: keyword.control.python
+      - match: |
+          (?x)
+          (?<=(\s|\(|\[|\{))
+          (
+            setv|defmain|defn|defn/a|fn|fn/a|defclass|nonlocal|global
+          )
+          (?=(\s|\)|\]|\}))
+        name: storage.control.python
   keyword:
     match: (?<=(\s|\(|\[|\{)):[\w\#\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}|\,))
-    name: constant.keyword.hy
+    name: constant.keyword.clojure
   map:
     begin: (\{)
     beginCaptures:
-      '1':
-        name: punctuation.section.map.begin.hy
+      "1":
+        name: punctuation.section.map.begin.clojure
     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
     endCaptures:
-      '1':
-        name: punctuation.section.map.end.trailing.hy
-      '2':
-        name: punctuation.section.map.end.hy
-    name: meta.map.hy
+      "1":
+        name: punctuation.section.map.end.trailing.clojure
+      "2":
+        name: punctuation.section.map.end.clojure
+    name: meta.map.python
     patterns:
-    - include: $self
-  metadata:
-    patterns:
-    - begin: (\^\{)
-      beginCaptures:
-        '1':
-          name: punctuation.section.metadata.map.begin.hy
-      end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
-      endCaptures:
-        '1':
-          name: punctuation.section.metadata.map.end.trailing.hy
-        '2':
-          name: punctuation.section.metadata.map.end.hy
-      name: meta.metadata.map.hy
-      patterns:
       - include: $self
-    - begin: (\^)
-      end: (\s)
-      name: meta.metadata.simple.hy
-      patterns:
-      - include: '#keyword'
-      - include: $self
-  namespace-symbol:
-    patterns:
-    - captures:
-        '1':
-          name: meta.symbol.namespace.hy
-      match: ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)/
+  # metadata:
+  #   patterns:
+  #   - begin: (\^\{)
+  #     beginCaptures:
+  #       '1':
+  #         name: punctuation.section.metadata.map.begin.clojure
+  #     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
+  #     endCaptures:
+  #       '1':
+  #         name: punctuation.section.metadata.map.end.trailing.clojure
+  #       '2':
+  #         name: punctuation.section.metadata.map.end.clojure
+  #     name: meta.metadata.map.clojure
+  #     patterns:
+  #     - include: $self
+  #   - begin: (\^)
+  #     end: (\s)
+  #     name: meta.metadata.simple.clojure
+  #     patterns:
+  #     - include: '#keyword'
+  #     - include: $self
   quoted-sexp:
-    begin: (['``]\()
+    begin: (['`]\()
     beginCaptures:
-      '1':
-        name: punctuation.section.expression.begin.hy
+      "1":
+        name: punctuation.section.expression.begin.python
     end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
-      '1':
-        name: punctuation.section.expression.end.trailing.hy
-      '2':
-        name: punctuation.section.expression.end.trailing.hy
-      '3':
-        name: punctuation.section.expression.end.hy
-    name: meta.quoted-expression.hy
+      "1":
+        name: punctuation.section.expression.end.trailing.python
+      "2":
+        name: punctuation.section.expression.end.trailing.python
+      "3":
+        name: punctuation.section.expression.end.python
+    name: meta.quoted-expression.python
     patterns:
-    - include: $self
+      - include: $self
   set:
     begin: (\#\{)
     beginCaptures:
-      '1':
-        name: punctuation.section.set.begin.hy
+      "1":
+        name: punctuation.section.set.begin.python
     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
     endCaptures:
-      '1':
-        name: punctuation.section.set.end.trailing.hy
-      '2':
-        name: punctuation.section.set.end.hy
-    name: meta.set.hy
+      "1":
+        name: punctuation.section.set.end.trailing.python
+      "2":
+        name: punctuation.section.set.end.python
+    name: meta.set.python
     patterns:
-    - include: $self
+      - include: $self
   sexp:
     begin: (\()
     beginCaptures:
-      '1':
-        name: punctuation.section.expression.begin.hy
+      "1":
+        name: punctuation.section.expression.begin.python
     end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
-      '1':
-        name: punctuation.section.expression.end.trailing.hy
-      '2':
-        name: punctuation.section.expression.end.trailing.hy
-      '3':
-        name: punctuation.section.expression.end.hy
-    name: meta.expression.hy
+      "1":
+        name: punctuation.section.expression.end.trailing.python
+      "2":
+        name: punctuation.section.expression.end.trailing.python
+      "3":
+        name: punctuation.section.expression.end.python
+    name: meta.expression.python
     patterns:
-    - begin: |
-        (?x)
-        (?<=\()
-        (defmain|defn|defn/a|fn|fn/a|defclass)\s+
-      beginCaptures:
-        '1':
-          name: storage.control.hy
-      end: (?=\))
-      name: meta.definition.global.hy
-      patterns:
-      - include: '#metadata'
-      - include: '#dynamic-variables'
-      - match: ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
-        name: entity.global.hy
+      - include: "#defines"
+      - include: "#extends"
+      - include: "#keyfn"
+      - include: "#constants"
+      - include: "#vector"
+      - include: "#map"
+      - include: "#set"
+      - include: "#sexp"
+      - captures:
+          "1":
+            name: entity.name.function.python
+        match: (?<=\()(.+?)(?=\s|\))
+        patterns:
+          - include: $self
       - include: $self
-    - include: '#keyfn'
-    - include: '#constants'
-    - include: '#vector'
-    - include: '#map'
-    - include: '#set'
-    - include: '#sexp'
-    - captures:
-        '1':
-          name: entity.name.function.hy
-      match: (?<=\()(.+?)(?=\s|\))
-      patterns:
-      - include: $self
-    - include: $self
   shebang-comment:
     begin: ^(#!)
     beginCaptures:
-      '1':
-        name: punctuation.definition.comment.shebang.hy
+      "1":
+        name: punctuation.definition.comment.shebang.python
     end: $
-    name: comment.line.shebang.hy
+    name: comment.line.shebang.python
   string:
     begin: (?<!\\)(")
     beginCaptures:
-      '1':
-        name: punctuation.definition.string.begin.hy
+      "1":
+        name: punctuation.definition.string.begin.python
     end: (")
     endCaptures:
-      '1':
-        name: punctuation.definition.string.end.hy
-    name: string.quoted.double.hy
+      "1":
+        name: punctuation.definition.string.end.python
+    name: string.quoted.double.python
     patterns:
-    - match: \\.
-      name: constant.character.escape.hy
+      - match: \\.
+        name: constant.character.escape.python
   symbol:
     patterns:
-    - match: ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
-      name: meta.symbol.hy
+      - match: ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+        name: meta.symbol.clojure
   var:
     match: (?<=(\s|\(|\[|\{)\#)'[\w\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}))
-    name: meta.var.hy
+    name: meta.var.python
   vector:
     begin: (\[)
     beginCaptures:
-      '1':
-        name: punctuation.section.vector.begin.hy
+      "1":
+        name: punctuation.section.vector.begin.python
     end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
     endCaptures:
-      '1':
-        name: punctuation.section.vector.end.trailing.hy
-      '2':
-        name: punctuation.section.vector.end.hy
-    name: meta.vector.hy
+      "1":
+        name: punctuation.section.vector.end.trailing.python
+      "2":
+        name: punctuation.section.vector.end.python
+    name: meta.vector.python
     patterns:
-    - include: $self
+      - include: $self
 scopeName: source.hy
-
