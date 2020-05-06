@@ -4,6 +4,7 @@ import plistlib
 import yaml
 import sys
 import os
+import shutil
 
 
 def convert(lib_in, file_in, lib_out, file_out):
@@ -34,6 +35,8 @@ libs = {
 def main():
     _, filename_in, filename_out, *_ = sys.argv
     assert os.path.exists(filename_in)
+    if os.path.exists(filename_out):
+        shutil.move(filename_out, filename_out + "_copy")
 
     lib_in, lib_out = None, None
     for ending in libs.keys():
