@@ -63,24 +63,26 @@ repository:
     begin: |
       (?x)
       (?<=\()
-      (defmain|defn|defn/a|fn|fn/a|defclass)\s+
+      (defmain|defn/a|defn|fn/a|fn|defclass)\s+
+      ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)\s+
+      (?=\[)
     beginCaptures:
-      "1":
+      '1':
         name: storage.control.python
+      '2':
+        name: entity.name.function.python.d
     end: (?=\))
     name: meta.function.python
     patterns:
-      - match: *hy_symbol
-        name: entity.name.function.python.defines
       - include: "#args"
       - include: "#sexp"
   extends:
     begin: |
       (?x)
       (?<=\()
-      (import|require|defmacro|defmacro/g!|defmacro!|deftag)\s+
+      (import|require|defmacro/g!|defmacro!|defmacro|deftag)\s+
     beginCaptures:
-      "1":
+      "2":
         name: keyword.control.python
     end: (?=\))
     name: meta.function.python
@@ -94,7 +96,7 @@ repository:
           (?x)
           (?<=(\s|\(|\[|\{))
           (
-            \.|->|->>|and|as->|assert|assoc|break|comment|cond|
+            ->|->>|and|as->|assert|assoc|break|comment|cond|
             dfor|continue|doc|#doc|do|
             defmacro|defmacro/g!|defmacro!|
             deftag|del|doto|eval-and-compile|eval-when-compile|
