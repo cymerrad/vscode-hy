@@ -1,5 +1,3 @@
-symbols:
-  - hy_symbol: &hy_symbol ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
 name: Hy
 patterns:
   - include: "#comment"
@@ -21,20 +19,21 @@ repository:
     begin: (\[)
     beginCaptures:
       "1":
-        name: punctuation.definition.parameters.begin.python
-    end: (\])
+        name: punctuation.definition.parameters.begin.clojure
+    end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
     endCaptures:
       "1":
-        name: punctuation.definition.parameters.end.python
+        name: punctuation.definition.parameters.end.clojure
     name: meta.function.parameters.python
     patterns:
+      # - include: $self
       - match: \s*(\w+)\s*,?\s*
         name: variable.parameter.function.language.python
   comment:
     begin: (?<!\\);
     beginCaptures:
       "0":
-        name: punctuation.definition.comment.python
+        name: punctuation.definition.comment.clojure
     end: $
     name: comment.line.semicolon.clojure
   constants:
@@ -58,65 +57,22 @@ repository:
       #   name: constant.numeric.bigint.python
       - match: (-?\d+)
         name: constant.numeric.dec.python
-      - include: "#keyword"
-  defines:
-    begin: |
-      (?x)
-      (?<=\()
-      (defmain|defn/a|defn|fn/a|fn|defclass)\s+
-      ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)\s+
-      (?=\[)
-    beginCaptures:
-      '1':
-        name: storage.control.python
-      '2':
-        name: entity.name.function.python.d
-    end: (?=\))
-    name: meta.function.python
-    patterns:
-      - include: "#args"
-      - include: "#sexp"
-  extends:
-    begin: |
-      (?x)
-      (?<=\()
-      (import|require|defmacro/g!|defmacro!|defmacro|deftag)\s+
-    beginCaptures:
-      "2":
-        name: keyword.control.python
-    end: (?=\))
-    name: meta.function.python
-    patterns:
-      - include: "#var"
   keyfn:
     patterns:
       # - match: (?<=(\s|\(|\[|\{))(if(-[-\p{Ll}\?]*)?|when(-[-\p{Ll}]*)?|for(-[-\p{Ll}]*)?|cond|do|let(-[-\p{Ll}\?]*)?|binding|loop|recur|fn|throw[\p{Ll}\-]*|try|catch|finally|([\p{Ll}]*case))(?=(\s|\)|\]|\}))
       #   name: storage.control.python
-      - match: |
-          (?x)
-          (?<=(\s|\(|\[|\{))
-          (
-            ->|->>|and|as->|assert|assoc|break|comment|cond|
-            dfor|continue|doc|#doc|do|
-            defmacro|defmacro/g!|defmacro!|
-            deftag|del|doto|eval-and-compile|eval-when-compile|
-            first|for|gensym|get|gfor|if|if\*|if-not|
-            lif|lif-not|import|last|lfor|
-            not|or|print|quasiquote|quote|require|
-            rest|return|sfor|cut|raise|try|unless|
-            unpack-iterable|unpack-mapping|unquote|
-            unquote-splice|when|while|with|with/a|
-            with-decorator|#@|with-gensyms|xor|yield|yield-from
-          )
-          (?=(\s|\)|\]|\}))
+      - match: "(?<=(\\s|\\(|\\[|\\{))\
+          (->|->>|and|as->|assert|assoc|break|comment|cond|\
+          dfor|continue|doc|#doc|do|defmacro|defmacro/g!|defmacro!|\
+          deftag|del|doto|eval-and-compile|eval-when-compile|first|for|gensym|get|gfor|if|if\\*|if-not|\
+          lif|lif-not|import|last|lfor|not|or|print|quasiquote|quote|require|\
+          rest|return|sfor|cut|raise|try|unless|unpack-iterable|unpack-mapping|unquote|\
+          unquote-splice|when|while|with|with/a|with-decorator|#@|with-gensyms|xor|yield|yield-from)\
+          (?=(\\s|\\)|\\]|\\}))"
         name: keyword.control.python
-      - match: |
-          (?x)
-          (?<=(\s|\(|\[|\{))
-          (
-            setv|defmain|defn|defn/a|fn|fn/a|defclass|nonlocal|global
-          )
-          (?=(\s|\)|\]|\}))
+      - match: "(?<=(\\s|\\(|\\[|\\{))\
+          (setv|defmain|defn|defn/a|fn|fn/a|defclass|nonlocal|global)\
+          (?=(\\s|\\)|\\]|\\}))"
         name: storage.control.python
   keyword:
     match: (?<=(\s|\(|\[|\{)):[\w\#\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}|\,))
@@ -160,15 +116,15 @@ repository:
     begin: (['`]\()
     beginCaptures:
       "1":
-        name: punctuation.section.expression.begin.python
+        name: punctuation.section.expression.begin.clojure
     end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
       "1":
-        name: punctuation.section.expression.end.trailing.python
+        name: punctuation.section.expression.end.trailing.clojure
       "2":
-        name: punctuation.section.expression.end.trailing.python
+        name: punctuation.section.expression.end.trailing.clojure
       "3":
-        name: punctuation.section.expression.end.python
+        name: punctuation.section.expression.end.clojure
     name: meta.quoted-expression.python
     patterns:
       - include: $self
@@ -176,13 +132,13 @@ repository:
     begin: (\#\{)
     beginCaptures:
       "1":
-        name: punctuation.section.set.begin.python
+        name: punctuation.section.set.begin.clojure
     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
     endCaptures:
       "1":
-        name: punctuation.section.set.end.trailing.python
+        name: punctuation.section.set.end.trailing.clojure
       "2":
-        name: punctuation.section.set.end.python
+        name: punctuation.section.set.end.clojure
     name: meta.set.python
     patterns:
       - include: $self
@@ -190,19 +146,40 @@ repository:
     begin: (\()
     beginCaptures:
       "1":
-        name: punctuation.section.expression.begin.python
+        name: punctuation.section.expression.begin.clojure
     end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
       "1":
-        name: punctuation.section.expression.end.trailing.python
+        name: punctuation.section.expression.end.trailing.clojure
       "2":
-        name: punctuation.section.expression.end.trailing.python
+        name: punctuation.section.expression.end.trailing.clojure
       "3":
-        name: punctuation.section.expression.end.python
+        name: punctuation.section.expression.end.clojure
     name: meta.expression.python
     patterns:
-      - include: "#defines"
-      - include: "#extends"
+      - begin: (?<=\()(defmain|defn/a|defn|fn/a|fn|defclass)\s+
+        beginCaptures:
+          '1':
+            name: storage.control.python
+        end: (?=\))
+        name: meta.definition.function.hy
+        patterns:
+        # - include: '#metadata'
+        - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+          name: entity.name.function.python
+        - include: "#args"
+        - include: $self
+      - begin: (?<=\()(import|require|defmacro/g!|defmacro!|defmacro|deftag)\s+
+        beginCaptures:
+          '1':
+            name: keyword.control.python
+        end: (?=\))
+        name: meta.definition.global.clojure
+        patterns:
+        # - include: '#metadata'
+        - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+          name: entity.global.clojure
+        - include: $self
       - include: "#keyfn"
       - include: "#constants"
       - include: "#vector"
@@ -220,25 +197,25 @@ repository:
     begin: ^(#!)
     beginCaptures:
       "1":
-        name: punctuation.definition.comment.shebang.python
+        name: punctuation.definition.comment.shebang.clojure
     end: $
     name: comment.line.shebang.python
   string:
     begin: (?<!\\)(")
     beginCaptures:
       "1":
-        name: punctuation.definition.string.begin.python
+        name: punctuation.definition.string.begin.clojure
     end: (")
     endCaptures:
       "1":
-        name: punctuation.definition.string.end.python
+        name: punctuation.definition.string.end.clojure
     name: string.quoted.double.python
     patterns:
       - match: \\.
         name: constant.character.escape.python
   symbol:
     patterns:
-      - match: ([\p{L}\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+      - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
         name: meta.symbol.clojure
   var:
     match: (?<=(\s|\(|\[|\{)\#)'[\w\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}))
@@ -247,13 +224,13 @@ repository:
     begin: (\[)
     beginCaptures:
       "1":
-        name: punctuation.section.vector.begin.python
+        name: punctuation.section.vector.begin.clojure
     end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
     endCaptures:
       "1":
-        name: punctuation.section.vector.end.trailing.python
+        name: punctuation.section.vector.end.trailing.clojure
       "2":
-        name: punctuation.section.vector.end.python
+        name: punctuation.section.vector.end.clojure
     name: meta.vector.python
     patterns:
       - include: $self
