@@ -13,7 +13,8 @@ Also a bit modernized and fixed where possible (WIP).
 - octals and hexes
 
 # TODO
-- classes
+- **build process for npm install**
+- separate rules for classes, lambdas, macros and imports
 - format & bracket string (https://docs.hylang.org/en/stable/language/syntax.html#string-literals)
 - function definition variadic args & metadata
 - some special symbols like #_, #* etc.
