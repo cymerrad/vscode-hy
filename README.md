@@ -8,10 +8,14 @@ Also a bit modernized and fixed where possible (WIP).
 - json from more readable [citation needed] yaml
 - lists, sets and dictionaries
 - remove non-built-in symbols
-
-# TODO
-- functions, classes and their bodies
+- functions
 - illegal parenthesis
 - octals and hexes
+
+# TODO
+- classes
 - format & bracket string (https://docs.hylang.org/en/stable/language/syntax.html#string-literals)
-- discard prefix
+- function definition variadic args & metadata
+- some special symbols like #_, #* etc.
+- for, lfor, gfor syntax help
+- special highlight for regexes
