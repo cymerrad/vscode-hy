@@ -63,17 +63,23 @@ repository:
       #   name: storage.control.python
       - match: "(?<=(\\s|\\(|\\[|\\{))\
           (->|->>|and|as->|assert|assoc|break|comment|cond|\
-          dfor|continue|doc|#doc|do|defmacro|defmacro/g!|defmacro!|\
-          deftag|del|doto|eval-and-compile|eval-when-compile|first|for|gensym|get|gfor|if|if\\*|if-not|\
-          lif|lif-not|import|last|lfor|not|or|print|quasiquote|quote|require|\
-          rest|return|sfor|cut|raise|try|unless|unpack-iterable|unpack-mapping|unquote|\
-          unquote-splice|when|while|with|with/a|with-decorator|#@|with-gensyms|xor|yield|yield-from)\
+          dfor|continue|do|defmacro/g!|defmacro!|defmacro|\
+          deftag|del|doto|for|gfor|if|if\\*|if-not|\
+          lif|lif-not|import|lfor|not|or|require|\
+          rest|return|sfor|raise|try|unless|\
+          when|while|with|with/a|with-decorator|#@|with-gensyms|xor|yield|yield-from)\
           (?=(\\s|\\)|\\]|\\}))"
         name: keyword.control.python
       - match: "(?<=(\\s|\\(|\\[|\\{))\
-          (setv|defmain|defn|defn/a|fn|fn/a|defclass|nonlocal|global)\
+          (setv|get|nonlocal|global|defmain|defn/a|defn|fn/a|fn|defclass)\
           (?=(\\s|\\)|\\]|\\}))"
         name: storage.control.python
+      - match: "(?<=(\\s|\\(|\\[|\\{))\
+          (eval-and-compile|eval-when-compile|comment|quasiquote|quote|unquote|\
+          unpack-iterable|unpack-mapping|doc|#doc|last|first|cut|unquote-splice|\
+          print|gensym|comp|,)\
+          (?=(\\s|\\)|\\]|\\}))"
+        name: support.function.builtin.python
   keyword:
     match: (?<=(\s|\(|\[|\{)):[\w\#\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}|\,))
     name: constant.keyword.clojure

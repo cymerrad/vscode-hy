@@ -95,7 +95,9 @@ def main():
     _, filename_in, filename_out, *_ = sys.argv
     assert os.path.exists(filename_in)
     if os.path.exists(filename_out):
-        shutil.move(filename_out, filename_out + "_copy")
+        parts = filename_out.split(".")
+        filename_copy = ".".join(parts[:-1] + ["_copy"] + parts[-1:])
+        shutil.move(filename_out, filename_copy)
 
     lib_in, lib_out = None, None
     for ending in libs.keys():
