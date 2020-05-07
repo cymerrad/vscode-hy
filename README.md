@@ -1,16 +1,6 @@
 # Hylang support for VSCode
 Syntax file *borrowed* from VSCode's Clojure built-in, but converted into YAML for readability<sup>[citation needed]</sup>.
-Colors for tokens are as similar to Python as possible.
-
-# Done
-- using JSON instead of XML
-- using YAML instead of JSON
-- sensible colors & paren matching
-- fixed single-quote pairing
-- lists, sets and dictionaries
-- function definitions
-- fixed paren matching
-- octals and hexes
+Colors for tokens are as similar to Python's as possible.
 
 # TODO
 - **convert YAML on npm install**
@@ -23,3 +13,15 @@ Colors for tokens are as similar to Python as possible.
 - for, lfor, gfor syntax help
 - special highlight for regexes
 - built-in exceptions highlight
+- **maybe at that point publish?**
+- screenshots
+
+# Done
+- using JSON instead of XML
+- using YAML instead of JSON
+- sensible colors & paren matching
+- fixed single-quote pairing
+- lists, sets and dictionaries
+- function definitions
+- fixed paren matching
+- octals and hexes
