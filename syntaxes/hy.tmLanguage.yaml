@@ -19,23 +19,22 @@ repository:
     begin: (\[)
     beginCaptures:
       "1":
-        name: punctuation.definition.parameters.begin.clojure
+        name: punctuation.definition.parameters.begin.hylang
     end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
     endCaptures:
       "1":
-        name: punctuation.definition.parameters.end.clojure
+        name: punctuation.definition.parameters.end.hylang
     name: meta.function.parameters.python
     patterns:
-      # - include: $self
       - match: \s*(\w+)\s*,?\s*
         name: variable.parameter.function.language.python
   comment:
     begin: (?<!\\);
     beginCaptures:
       "0":
-        name: punctuation.definition.comment.clojure
+        name: punctuation.definition.comment.hylang
     end: $
-    name: comment.line.semicolon.clojure
+    name: comment.line.semicolon.hylang
   constants:
     patterns:
       - match: (None)(?=(\s|\)|\]|\}))
@@ -43,24 +42,18 @@ repository:
       - match: (True|False)
         name: constant.language.python
       - match: (-?\d+/\d+)
-        name: constant.numeric.ratio.clojure
+        name: constant.numeric.ratio.hylang
 
       - match: (-?0x[0-9a-fA-F]+)
         name: constant.numeric.hex.python
       - match: (-?0o[0-7]+)
         name: constant.numeric.oct.python
-      # - match: (-?\d+\.\d+([eE][+-]?\d+)?M)
-      #   name: constant.numeric.bigdecimal.python
       - match: (-?\d+\.\d+([eE][+-]?\d+)?)
         name: constant.numeric.float.python
-      # - match: (-?\d+N)
-      #   name: constant.numeric.bigint.python
       - match: (-?\d+)
         name: constant.numeric.dec.python
   keyfn:
     patterns:
-      # - match: (?<=(\s|\(|\[|\{))(if(-[-\p{Ll}\?]*)?|when(-[-\p{Ll}]*)?|for(-[-\p{Ll}]*)?|cond|do|let(-[-\p{Ll}\?]*)?|binding|loop|recur|fn|throw[\p{Ll}\-]*|try|catch|finally|([\p{Ll}]*case))(?=(\s|\)|\]|\}))
-      #   name: storage.control.python
       - match: "(?<=(\\s|\\(|\\[|\\{))\
           (->|->>|and|as->|assert|assoc|break|comment|cond|\
           dfor|continue|do|defmacro/g!|defmacro!|defmacro|\
@@ -82,18 +75,18 @@ repository:
         name: support.function.builtin.python
   keyword:
     match: (?<=(\s|\(|\[|\{)):[\w\#\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}|\,))
-    name: constant.keyword.clojure
+    name: constant.keyword.hylang
   map:
     begin: (\{)
     beginCaptures:
       "1":
-        name: punctuation.section.map.begin.clojure
+        name: punctuation.section.map.begin.hylang
     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
     endCaptures:
       "1":
-        name: punctuation.section.map.end.trailing.clojure
+        name: punctuation.section.map.end.trailing.hylang
       "2":
-        name: punctuation.section.map.end.clojure
+        name: punctuation.section.map.end.hylang
     name: meta.map.python
     patterns:
       - include: $self
@@ -102,19 +95,19 @@ repository:
   #   - begin: (\^\{)
   #     beginCaptures:
   #       '1':
-  #         name: punctuation.section.metadata.map.begin.clojure
+  #         name: punctuation.section.metadata.map.begin.hylang
   #     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
   #     endCaptures:
   #       '1':
-  #         name: punctuation.section.metadata.map.end.trailing.clojure
+  #         name: punctuation.section.metadata.map.end.trailing.hylang
   #       '2':
-  #         name: punctuation.section.metadata.map.end.clojure
-  #     name: meta.metadata.map.clojure
+  #         name: punctuation.section.metadata.map.end.hylang
+  #     name: meta.metadata.map.hylang
   #     patterns:
   #     - include: $self
   #   - begin: (\^)
   #     end: (\s)
-  #     name: meta.metadata.simple.clojure
+  #     name: meta.metadata.simple.hylang
   #     patterns:
   #     - include: '#keyword'
   #     - include: $self
@@ -122,15 +115,15 @@ repository:
     begin: (['`]\()
     beginCaptures:
       "1":
-        name: punctuation.section.expression.begin.clojure
+        name: punctuation.section.expression.begin.hylang
     end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
       "1":
-        name: punctuation.section.expression.end.trailing.clojure
+        name: punctuation.section.expression.end.trailing.hylang
       "2":
-        name: punctuation.section.expression.end.trailing.clojure
+        name: punctuation.section.expression.end.trailing.hylang
       "3":
-        name: punctuation.section.expression.end.clojure
+        name: punctuation.section.expression.end.hylang
     name: meta.quoted-expression.python
     patterns:
       - include: $self
@@ -138,13 +131,13 @@ repository:
     begin: (\#\{)
     beginCaptures:
       "1":
-        name: punctuation.section.set.begin.clojure
+        name: punctuation.section.set.begin.hylang
     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
     endCaptures:
       "1":
-        name: punctuation.section.set.end.trailing.clojure
+        name: punctuation.section.set.end.trailing.hylang
       "2":
-        name: punctuation.section.set.end.clojure
+        name: punctuation.section.set.end.hylang
     name: meta.set.python
     patterns:
       - include: $self
@@ -152,15 +145,15 @@ repository:
     begin: (\()
     beginCaptures:
       "1":
-        name: punctuation.section.expression.begin.clojure
+        name: punctuation.section.expression.begin.hylang
     end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
       "1":
-        name: punctuation.section.expression.end.trailing.clojure
+        name: punctuation.section.expression.end.trailing.hylang
       "2":
-        name: punctuation.section.expression.end.trailing.clojure
+        name: punctuation.section.expression.end.trailing.hylang
       "3":
-        name: punctuation.section.expression.end.clojure
+        name: punctuation.section.expression.end.hylang
     name: meta.expression.python
     patterns:
       - begin: (?<=\()(defmain|defn/a|defn|fn/a|fn|defclass)\s+
@@ -180,11 +173,11 @@ repository:
           '1':
             name: keyword.control.python
         end: (?=\))
-        name: meta.definition.global.clojure
+        name: meta.definition.global.hylang
         patterns:
         # - include: '#metadata'
         - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
-          name: entity.global.clojure
+          name: entity.global.hylang
         - include: $self
       - include: "#keyfn"
       - include: "#constants"
@@ -203,18 +196,18 @@ repository:
     begin: ^(#!)
     beginCaptures:
       "1":
-        name: punctuation.definition.comment.shebang.clojure
+        name: punctuation.definition.comment.shebang.hylang
     end: $
     name: comment.line.shebang.python
   string:
     begin: (?<!\\)(")
     beginCaptures:
       "1":
-        name: punctuation.definition.string.begin.clojure
+        name: punctuation.definition.string.begin.hylang
     end: (")
     endCaptures:
       "1":
-        name: punctuation.definition.string.end.clojure
+        name: punctuation.definition.string.end.hylang
     name: string.quoted.double.python
     patterns:
       - match: \\.
@@ -222,7 +215,7 @@ repository:
   symbol:
     patterns:
       - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
-        name: meta.symbol.clojure
+        name: meta.symbol.hylang
   var:
     match: (?<=(\s|\(|\[|\{)\#)'[\w\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}))
     name: meta.var.python
@@ -230,13 +223,13 @@ repository:
     begin: (\[)
     beginCaptures:
       "1":
-        name: punctuation.section.vector.begin.clojure
+        name: punctuation.section.vector.begin.hylang
     end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
     endCaptures:
       "1":
-        name: punctuation.section.vector.end.trailing.clojure
+        name: punctuation.section.vector.end.trailing.hylang
       "2":
-        name: punctuation.section.vector.end.clojure
+        name: punctuation.section.vector.end.hylang
     name: meta.vector.python
     patterns:
       - include: $self
