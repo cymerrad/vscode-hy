@@ -1,349 +1,236 @@
-comment: >
-  The foldings do not currently work the way I want them to. This
-  may be a limitation of the way they are applied rather than the
-  regexps in use. Nonetheless, the foldings will end on the last
-  identically indented blank line following an s-expression. Not
-  ideal perhaps, but it works. Also, the #illegal pattern never
-  matches an unpaired ( as being illegal. Why?! -- Rob Rix
-
-  Ok, hopefully this grammar works better on quoted stuff now.  It
-  may break for fancy macros, but should generally work pretty
-  smoothly.  -- Jacob Rus
-
-  I have attempted to get this under control but because of the way folding
-  and indentation interact in Textmate, I am not sure if it is possible. In the
-  meantime, I have implemented Python-style folding anchored at newlines.
-
-  Additionally, I have made some minor improvements to the numeric constant
-  highlighting. Next up is square bracket expressions, I guess, but that
-  should be trivial. -- ozy`
-
-fileTypes:
-  - hy
-keyEquivalent: ^~S
 name: Hy
 patterns:
   - include: "#comment"
+  - include: "#shebang-comment"
+  - include: "#quoted-sexp"
   - include: "#sexp"
+  - include: "#keyfn"
   - include: "#string"
-  - include: "#language-functions"
-  - include: "#list"
-  - include: "#quote"
-  - include: "#illegal"
+  - include: "#vector"
+  - include: "#set"
+  - include: "#map"
+  # - include: '#regexp'
+  - include: "#var"
+  - include: "#constants"
+  # - include: '#metadata'
+  - include: "#symbol"
 repository:
-  comment:
-    begin: (^[ \t]+)?(?=;)
-    beginCaptures:
-      "1":
-        name: punctuation.whitespace.comment.leading.hy
-    end: (?!\G)
-    patterns:
-      - begin: ;
-        beginCaptures:
-          "0":
-            name: punctuation.definition.comment.hy
-        end: \n
-        name: comment.line.semicolon.hy
-  constants:
-    patterns:
-      - match: True|False
-        name: constant.language.boolean.hy
-      - match: (?<=[\(\s])((#e|#i)?[0-9]+(\.[0-9]+)?|(#x)[0-9a-fA-F]+|(#o)[0-7]+|(#b)[01]+)(?=[\s;()'",\[\]])
-        name: constant.numeric.hy
-  illegal:
-    comment: TODO(rado) This causes issues with keyword.control.hy
-    match: '[()\[\]]'
-    # name: invalid.illegal.parenthesis.hy
-    name: punctuation.section.lost.hy
-  list:
+  args:
     begin: (\[)
     beginCaptures:
       "1":
-        name: punctuation.section.list.begin.hy
-    end: (\])
+        name: punctuation.definition.parameters.begin.hylang
+    end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
     endCaptures:
       "1":
-        name: punctuation.section.list.end.hy
-    name: meta.list.hy
-  language-functions:
+        name: punctuation.definition.parameters.end.hylang
+    name: meta.function.parameters.python
     patterns:
-      - match: |
-          (?x)
-          (?<=(\s|\()) # preceded by space or (
-          (
-            \.|->|->>|and|as->|assert|assoc|break|comment|cond|
-            dfor|setv|defclass|defn|continue|do|doc|#doc|
-            defn/a|defmain|defmacro|defmacro/g!|defmacro!|
-            deftag|del|doto|eval-and-compile|eval-when-compile|
-            first|for|gensym|get|gfor|global|if|if\*|if-not|
-            lif|lif-not|import|fn|fn/a|last|lfor|nonlocal|
-            not|or|print|quasiquote|quote|require|
-            rest|return|sfor|cut|raise|try|unless|
-            unpack-iterable|unpack-mapping|unquote|
-            unquote-splice|when|while|with|with/a|
-            with-decorator|#@|with-gensyms|xor|yield|yield-from
-          )
-          (?=(\s|\())
-        name: keyword.control.hy
-      - comment: "\n+, -, *, /, =, !=, >, etc. \n"
-        match: |
-          (?x)
-          (?<=(\s|\()) # preceded by space or (
-          ( >=?|<=?|!?=|[*/+-])
-          (?=(\s|\()) # followed by space or (
-        name: keyword.operator.arithmetic.hy
-      - match: |
-          (?x)
-          (?<=(\s|\()) # preceded by space or (
-          (
-            #hy built in
-            # .|->|->>|and|as->|assert|assoc|break|comment|
-            # cond|continue|do|doc|#doc|dfor|setv|defclass|
-            # defn|defn/a|defmain|defmacro|defmacro/g!|defmacro!|
-            # deftag|del|doto|eval-and-compile|eval-when-compile|
-            # first|for|gensym|get|gfor|global|if|if*|if-not|
-            # import|fn|fn/a|last|lfor|nonlocal|not|or|print|
-            # quasiquote|quote|require|rest|return|sfor|cut|raise|
-            # try|unless|unpack-iterable|unpack-mapping|unquote|
-            # unquote-splice|when|while|with|with/a|with-decorator|
-            # with-gensyms|xor|yield|yield-from|#*|
-
-            #hy core
-            butlast|coll?|comp|complement|constantly|dec|
-            disassemble|empty?|eval|every?|exec|float?|
-            fraction|even?|identity|inc|instance?|integer?|
-            interleave|interpose|iterable?|iterator?|juxt|
-            keyword|keyword?|macroexpand|macroexpand-1|mangle|
-            merge-with|name|neg?|none?|nth|numeric?|odd?|
-            partition|pos?|second|some|string?|symbol?|zero?|
-            #hy Sequence
-            cycle|distinct|drop|drop-last|drop-while|filter|
-            flatten|iterate|read|read-str|remove|repeat|
-            repeatedly|take|take-nth|take-while|unmangle|
-            #py keyword and built-in https://docs.python.org/3/library/functions.html
-            False|None|True|as|in|is|lambda|nonlocal|not|pass|
-            abs|all|any|ascii|bin|bool|bytearray|bytes|callable|
-            chr|classmethod|compile|complex|delattr|dict|dir|divmod|
-            enumerate|eval|exec|filter|float|format|frozenset|getattr|
-            globals|hasattr|hash|help|hex|id|input|int|isinstance|issubclass|
-            iter|len|list|locals|map|max|memoryview|min|next|object|oct|open|
-            ord|pow|print|property|range|repr|reversed|round|set|setattr|slice|
-            sorted|staticmethod|str|sum|super|tuple|type|vars|zip|__import__|
-
-            # unary math operators
-            abs|acos|angle|asin|assoc|assq|assv|atan|ceiling|
-            cos|floor|round|sin|sqrt|tan|
-            (?:real|imag)-part|numerator|denominator
-
-            # other math operators
-            modulo|exp|expt|remainder|quotient|lcm|
-
-            # ports / files
-            call-with-(?:input|output)-file|
-            (?:close|current)-(?:input|output)-port|
-            with-(?:input|output)-from-file|
-            open-(?:input|output)-file|
-
-            # char-«foo»
-            char-(?:downcase|upcase|ready)|
-
-            # make-«foo»
-            make-(?:polar|promise|rectangular|string|vector)
-
-            # string-«foo», vector-«foo»
-            string(?:-(?:append|copy|length|ref))?|
-            vector(?:-length|-ref)
-          )
-          (?=(\s|\()) # followed by space or (
-
-        name: support.function.general.hy
-  quote:
-    comment: >
-      We need to be able to quote any kind of item, which creates
-      a tiny bit of complexity in our grammar.  It is hopefully
-      not overwhelming complexity.
-
-      Note: the first two matches are special cases.  quoted
-      symbols, and quoted empty lists are considered constant.other
-
+      - match: \s*(\w+)\s*,?\s*
+        name: variable.parameter.function.language.python
+  comment:
+    begin: (?<!\\);
+    beginCaptures:
+      "0":
+        name: punctuation.definition.comment.hylang
+    end: $
+    name: comment.line.semicolon.hylang
+  constants:
     patterns:
-      - captures:
-          "1":
-            name: punctuation.section.quoted.symbol.hy
-        match: |
-          (?x)
-          (')\s*
-          ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)
-        name: constant.other.symbol.hy
-      - captures:
-          "1":
-            name: punctuation.section.quoted.empty-list.hy
-          "2":
-            name: meta.expression.hy
-          "3":
-            name: punctuation.section.expression.begin.hy
-          "4":
-            name: punctuation.section.expression.end.hy
-        match: |
-          (?x)
-          (')\s*
-          ((\()\s*(\)))
-        name: constant.other.empty-list.hy
-      - begin: (')\s*
-        beginCaptures:
-          "1":
-            name: punctuation.section.quoted.hy
-        comment: quoted double-quoted string or s-expression
-        end: (?=[\s()])|(?<=\n)
-        name: string.other.quoted-object.hy
-        patterns:
-          - include: "#quoted"
-  quote-sexp:
-    begin: (?<=\()\s*(quote)\b\s*
+      - match: (None)(?=(\s|\)|\]|\}))
+        name: constant.language.python
+      - match: (True|False)
+        name: constant.language.python
+      - match: (-?\d+/\d+)
+        name: constant.numeric.ratio.hylang
+
+      - match: (-?0x[0-9a-fA-F]+)
+        name: constant.numeric.hex.python
+      - match: (-?0o[0-7]+)
+        name: constant.numeric.oct.python
+      - match: (-?\d+\.\d+([eE][+-]?\d+)?)
+        name: constant.numeric.float.python
+      - match: (-?\d+)
+        name: constant.numeric.dec.python
+  keyfn:
+    patterns:
+      - match: "(?<=(\\s|\\(|\\[|\\{))\
+          (->|->>|and|as->|assert|assoc|break|comment|cond|\
+          dfor|continue|do|defmacro/g!|defmacro!|defmacro|\
+          deftag|del|doto|except|else|for|gfor|if|if\\*|if-not|\
+          lif|lif-not|import|lfor|not|or|require|\
+          rest|return|sfor|raise|try|unless|\
+          when|while|with|with/a|with-decorator|#@|with-gensyms|xor|yield|yield-from)\
+          (?=(\\s|\\)|\\]|\\}))"
+        name: keyword.control.python
+      - match: "(?<=(\\s|\\(|\\[|\\{))\
+          (setv|get|nonlocal|global|defmain|defn/a|defn|fn/a|fn|defclass)\
+          (?=(\\s|\\)|\\]|\\}))"
+        name: storage.control.python
+      - match: "(?<=(\\s|\\(|\\[|\\{))\
+          (eval-and-compile|eval-when-compile|comment|quasiquote|quote|unquote|\
+          unpack-iterable|unpack-mapping|doc|#doc|last|first|cut|unquote-splice|\
+          print|gensym|comp|,)\
+          (?=(\\s|\\)|\\]|\\}))"
+        name: support.function.builtin.python
+  keyword:
+    match: (?<=(\s|\(|\[|\{)):[\w\#\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}|\,))
+    name: constant.keyword.hylang
+  map:
+    begin: (\{)
     beginCaptures:
       "1":
-        name: keyword.control.quote.hy
-    comment: >
-      Something quoted with (quote «thing»).  In this case «thing»
-      will not be evaluated, so we are considering it a string.
-    contentName: string.other.quote.hy
-    end: (?=[\s)])|(?<=\n)
+        name: punctuation.section.map.begin.hylang
+    end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
+    endCaptures:
+      "1":
+        name: punctuation.section.map.end.trailing.hylang
+      "2":
+        name: punctuation.section.map.end.hylang
+    name: meta.map.python
     patterns:
-      - include: "#quoted"
-  quoted:
+      - include: $self
+  # metadata:
+  #   patterns:
+  #   - begin: (\^\{)
+  #     beginCaptures:
+  #       '1':
+  #         name: punctuation.section.metadata.map.begin.hylang
+  #     end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
+  #     endCaptures:
+  #       '1':
+  #         name: punctuation.section.metadata.map.end.trailing.hylang
+  #       '2':
+  #         name: punctuation.section.metadata.map.end.hylang
+  #     name: meta.metadata.map.hylang
+  #     patterns:
+  #     - include: $self
+  #   - begin: (\^)
+  #     end: (\s)
+  #     name: meta.metadata.simple.hylang
+  #     patterns:
+  #     - include: '#keyword'
+  #     - include: $self
+  quoted-sexp:
+    begin: (['`]\()
+    beginCaptures:
+      "1":
+        name: punctuation.section.expression.begin.hylang
+    end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
+    endCaptures:
+      "1":
+        name: punctuation.section.expression.end.trailing.hylang
+      "2":
+        name: punctuation.section.expression.end.trailing.hylang
+      "3":
+        name: punctuation.section.expression.end.hylang
+    name: meta.quoted-expression.python
     patterns:
-      - include: "#string"
-      - begin: (\()
-        beginCaptures:
-          "1":
-            name: punctuation.section.expression.begin.hy
-        end: (\))
-        endCaptures:
-          "1":
-            name: punctuation.section.expression.end.hy
-        name: meta.expression.hy
-        patterns:
-          - include: "#quoted"
-      - include: "#quote"
-      - include: "#illegal"
+      - include: $self
+  set:
+    begin: (\#\{)
+    beginCaptures:
+      "1":
+        name: punctuation.section.set.begin.hylang
+    end: (\}(?=[\}\]\)\s]*(?:;|$)))|(\})
+    endCaptures:
+      "1":
+        name: punctuation.section.set.end.trailing.hylang
+      "2":
+        name: punctuation.section.set.end.hylang
+    name: meta.set.python
+    patterns:
+      - include: $self
   sexp:
     begin: (\()
     beginCaptures:
       "1":
-        name: punctuation.section.expression.begin.hy
-    end: (\))(\n)?
+        name: punctuation.section.expression.begin.hylang
+    end: (\))$|(\)(?=[\}\]\)\s]*(?:;|$)))|(\))
     endCaptures:
       "1":
-        name: punctuation.section.expression.end.hy
+        name: punctuation.section.expression.end.trailing.hylang
       "2":
-        name: meta.after-expression.hy
-    name: meta.expression.hy
+        name: punctuation.section.expression.end.trailing.hylang
+      "3":
+        name: punctuation.section.expression.end.hylang
+    name: meta.expression.python
     patterns:
-      - include: "#comment"
-      - begin: |
-          (?x)
-          (?<=\()       # preceded by (
-          (defn)   # defn
-          (\s+)     #function name
-          ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)\s+
-          \[ # list of parameters
-          ((?:
-          ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])
-          \s+
-          )*(?:
-          ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])
-          )?)
-          (\])
-        captures:
-          "1":
-            name: keyword.control.hy
-          "2":
-            name: punctuation.definition.function.hy
-          "3":
-            name: entity.name.function.hy
-          "4":
-            name: variable.parameter.function.hy
-          "7":
-            name: punctuation.definition.function.hy
+      - begin: (?<=\()(defmain|defn/a|defn|fn/a|fn|defclass)\s+
+        beginCaptures:
+          '1':
+            name: storage.control.python
         end: (?=\))
-        name: meta.declaration.procedure.hy
+        name: meta.definition.function.hy
         patterns:
-          - include: "#comment"
-          - include: "#sexp"
-          - include: "#illegal"
-      - begin: |
-          (?x)
-          (?<=\() # preceded by (
-          (fn)\s+
-          (\[) # opening paren
-          ((?:
-          ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])
-          \s+
-          )*(?:
-            ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])
-          )?)
-          (\]) # closing paren
-        captures:
-          "1":
-            name: keyword.control.hy
-          "2":
-            name: punctuation.definition.variable.hy
-          "3":
-            name: variable.parameter.hy
-          "6":
-            name: punctuation.definition.variable.hy
-        comment: >
-          Not sure this one is quite correct.  That \s* is
-          particularly troubling
-
+        # - include: '#metadata'
+        - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+          name: entity.name.function.python
+        - include: "#args"
+        - include: $self
+      - begin: (?<=\()(import|require|defmacro/g!|defmacro!|defmacro|deftag)\s+
+        beginCaptures:
+          '1':
+            name: keyword.control.python
         end: (?=\))
-        name: meta.declaration.procedure.hy
+        name: meta.definition.global.hylang
         patterns:
-          - include: "#comment"
-          - include: "#sexp"
-          - include: "#illegal"
-      - begin: (?<=\()(defn)\s([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)\s*.*?
-        captures:
-          "1":
-            name: keyword.control.hy
-          "2":
-            name: variable.other.hy
-        end: (?=\))
-        name: meta.declaration.variable.hy
-        patterns:
-          - include: "#comment"
-          - include: "#sexp"
-          - include: "#illegal"
-      - include: "#quote-sexp"
-      - include: "#quote"
-      - include: "#language-functions"
-      - include: "#string"
+        # - include: '#metadata'
+        - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+          name: entity.global.hylang
+        - include: $self
+      - include: "#keyfn"
       - include: "#constants"
-      - match: (?<=[\(\s])(#\\)(space|newline|tab)(?=[\s\)])
-        name: constant.character.named.hy
-      - match: (?<=[\(\s])(#\\)x[0-9A-F]{2,4}(?=[\s\)])
-        name: constant.character.hex-literal.hy
-      - match: (?<=[\(\s])(#\\).(?=[\s\)])
-        name: constant.character.escape.hy
-      - comment: >
-          the . in (a . b) which conses together two elements
-          a and b. (a b c) == (a . (b . (c . nil)))
-        match: (?<=[ ()])\.(?=[ ()])
-        name: punctuation.separator.cons.hy
+      - include: "#vector"
+      - include: "#map"
+      - include: "#set"
       - include: "#sexp"
-      - include: "#illegal"
-  string:
-    begin: (")
+      - captures:
+          "1":
+            name: entity.name.function.python
+        match: (?<=\()(.+?)(?=\s|\))
+        patterns:
+          - include: $self
+      - include: $self
+  shebang-comment:
+    begin: ^(#!)
     beginCaptures:
       "1":
-        name: punctuation.definition.string.begin.hy
+        name: punctuation.definition.comment.shebang.hylang
+    end: $
+    name: comment.line.shebang.python
+  string:
+    begin: (?<!\\)(")
+    beginCaptures:
+      "1":
+        name: punctuation.definition.string.begin.hylang
     end: (")
     endCaptures:
       "1":
-        name: punctuation.definition.string.end.hy
-    name: string.quoted.double.hy
+        name: punctuation.definition.string.end.hylang
+    name: string.quoted.double.python
     patterns:
-      - match: \.
-        name: constant.character.escape.hy
+      - match: \\.
+        name: constant.character.escape.python
+  symbol:
+    patterns:
+      - match: ([\w\.\-\_\+\=\>\<\!\?\*][\w\.\-\_\:\+\=\>\<\!\?\*\d]*)
+        name: meta.symbol.hylang
+  var:
+    match: (?<=(\s|\(|\[|\{)\#)'[\w\.\-\_\:\+\=\>\<\/\!\?\*]+(?=(\s|\)|\]|\}))
+    name: meta.var.python
+  vector:
+    begin: (\[)
+    beginCaptures:
+      "1":
+        name: punctuation.section.vector.begin.hylang
+    end: (\](?=[\}\]\)\s]*(?:;|$)))|(\])
+    endCaptures:
+      "1":
+        name: punctuation.section.vector.end.trailing.hylang
+      "2":
+        name: punctuation.section.vector.end.hylang
+    name: meta.vector.python
+    patterns:
+      - include: $self
 scopeName: source.hy
-uuid: BEEFBEEF-BEEF-BEEF-BEEF-BEEFBEEFBEEF
