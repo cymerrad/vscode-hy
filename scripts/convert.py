@@ -39,7 +39,7 @@ class json_wrap:
 
     @staticmethod
     def dump(obj, *args, **kwargs):
-        fails = json_wrap.check_regexes_correctness(obj)
+        (fails, _) = json_wrap.check_regexes_correctness(obj)
 
         if len(fails):
             err_msg = f"Found {len(fails)} error{'s' if len(fails) > 1 else ''}"
@@ -57,6 +57,7 @@ class json_wrap:
     @staticmethod
     def check_regexes_correctness(dictionary):
         fails = {}
+        warnings = {}
 
         def check_re(key, pattern):
             nonlocal fails
@@ -67,12 +68,15 @@ class json_wrap:
                 return
 
             try:
-                re.compile(pattern)
+                rex = re.compile(pattern)
             except re.error as e:
                 fails[key] = e
 
+            if rex.match("") and key.endswith("match"):
+                fails[key] = "Matches empty string"
+
         traverse_dict(dictionary, "{}", check_re)
-        return fails
+        return fails, warnings
 
 
 libs = {
