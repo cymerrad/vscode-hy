@@ -57,7 +57,7 @@ repository:
       - match: "(?<=(\\s|\\(|\\[|\\{))\
           (->|->>|and|as->|assert|assoc|break|comment|cond|\
           dfor|continue|do|defmacro/g!|defmacro!|defmacro|\
-          deftag|del|doto|for|gfor|if|if\\*|if-not|\
+          deftag|del|doto|except|else|for|gfor|if|if\\*|if-not|\
           lif|lif-not|import|lfor|not|or|require|\
           rest|return|sfor|raise|try|unless|\
           when|while|with|with/a|with-decorator|#@|with-gensyms|xor|yield|yield-from)\
