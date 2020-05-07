@@ -1,6 +1,6 @@
 # Hylang support for VSCode
-Based on `sjhuangx/vscode-scheme` and `xuqinghan/vscode-hy`, but is much more than just a REGEXP replace of `scheme -> hy`.
-Also a bit modernized and fixed where possible (WIP).
+Started with `xuqinghan/vscode-hy`, but as it is just a REGEXP replace of `s/scheme/hy/`, it was impossible to fix.
+Current version is *borrowed* from [Clojure syntax](https://github.com/microsoft/vscode/blob/master/extensions/clojure/syntaxes/clojure.tmLanguage.json), but converted into YAML for readability <sup>[citation needed][1]</sup>.
 
 # Done
 - using .json instead of .xml
